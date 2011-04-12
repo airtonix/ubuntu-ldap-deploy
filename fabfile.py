@@ -151,7 +151,7 @@ def frontend_schema():
 		fabric.contrib.console.prompt(
 			fabric.colors.yellow("LDAP Root Password"),
 			key = "ROOTPASSWORD",
-			default = password(16, console=True)
+			default = password(16, console=False)
 		)
 
 		fabric.contrib.console.prompt(
@@ -170,7 +170,7 @@ def frontend_schema():
 		lib.template.write_template( frontend_template_path, frontend_path, fabric.api.env )
 
 		print( message_prefix + fabric.colors.yellow("Inserting schema {0}".format(frontend_path)) )
-		fabric.operations.local("sudo ldapadd -Y EXTERNAL -H ldapi:/// -f {0}".format( frontend_path ) )
+		fabric.operations.local("sudo ldapadd -x -D cn=admin,${0} -W -f {1}".format( fabric.api.env.DN, frontend_path ) )
 
 def backend_schema():
 	message_prefix = fabric.colors.cyan("Backend Schema") +" : "
