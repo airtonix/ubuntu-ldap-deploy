@@ -52,10 +52,11 @@ def install():
 
 def purge():
 	"""
-		Purge the ldap settings and database
-		  removes :
-		    /etc/ldap/*
-		    /var/lib/ldap/*
+	Purge the ldap settings and database
+	- Stops the Daemon
+	- Uses apt-get to purge :
+		- openLDAP daemon
+		- openLDAP utilities
 	"""
 	message_prefix = fabric.colors.cyan("openLDAP Package Management") + "["+ fabric.colors.red("PURGE") +"] : "
 	question = fabric.colors.yellow("Purge openLDAP Config and Database?")
@@ -65,13 +66,13 @@ def purge():
 
 def reset():
 	"""
-		Purge the ldap settings and database
-		Then recreate new default files.
-		  Removes :
-		    /etc/ldap/*
-		    /var/lib/ldap/*
-		  Runs :
-		  	dpkg-reconfigure slapd
+	Delete then Recreate openLDAP Settings and Database
+
+	Removes :
+		- /etc/ldap/*
+		- /var/lib/ldap/*
+	Runs :
+		- dpkg-reconfigure slapd
 	"""
 	message_prefix = fabric.colors.cyan("openLDAP Config") + "["+ fabric.colors.red("RESET") +"] : "
 	question = fabric.colors.yellow("Reset openLDAP Config and Database?")
@@ -82,18 +83,31 @@ def reset():
 
 def _variables():
 	"""
-		Sets some required variables
+	Sets some required variables
+		- LDAP Root Password
+		- LDAP Admin Password
+		- The Network Domain Name
+		- The Distinguished Name (DN)
+				- Composed of the Hostname and the Domain
+				  ie : 'dc=HOST, dc=DOMAIN'
 	"""
-	fabric.contrib.console.prompt( text=fabric.colors.blue("ROOT Password : "), key="ROOTPASSWD", default=password( 16, console=False) )
-	fabric.contrib.console.prompt( text=fabric.colors.blue("LDAP Admin Password : "), key="ADMINPASSWD", default=password( 16, console=False ) )
-	fabric.contrib.console.prompt( text=fabric.colors.blue("Network Domain Name : "), key="DOMAIN" )
+	fabric.contrib.console.prompt( text=fabric.colors.yellow("ROOT Password : "), key="ROOTPASSWD", default=password( 16, console=False) )
+	fabric.contrib.console.prompt( text=fabric.colors.yellow("LDAP Admin Password : "), key="ADMINPASSWD", default=password( 16, console=False ) )
+	fabric.contrib.console.prompt( text=fabric.colors.yellow("Network Domain Name : "), key="DOMAIN" )
 	fabric.api.env.DN="dc={0},dc={1}".format(fabric.api.env.HOSTNAME, fabric.api.env.DOMAIN)
 
 
 def dns(create=False):
 	"""
-		Defaults to reporting current situation.
-		This makes it hard for console users to directly stuff up
+	Insert Bind9 DNS CNAME Alias Records
+
+	@create :
+		Create the records based on :
+			- ldap.{env.HOSTNAME}.{env.DOMAIN}
+			- ldap-master.{env.HOSTNAME}.{env.DOMAIN}
+
+		Defaults to false so that quick use from console reports current situation.
+
 	"""
 	message_prefix = fabric.colors.cyan("Bind9 DNS CNAME Alias Records") +" : "
 	if create :
@@ -114,6 +128,10 @@ def dns(create=False):
 # SCHEMAS
 #
 def default_schema():
+	"""
+	Insert some default supporting LDIF schemas
+	TODO: provide an easy way to include other existing schemas.
+	"""
 	message_prefix = fabric.colors.cyan("Default Schema") +" : "
 
 	if fabric.contrib.console.confirm( "\t" + fabric.colors.yellow("Insert Default LDIF Schemas") ) :
@@ -148,9 +166,8 @@ def frontend_schema():
 			default = "Awesome Organisation description goes here"
 		)
 
-
 		print( message_prefix + fabric.colors.yellow("Processing Schema {0}".format(frontend_path)) )
-		write_template( frontend_template_path, frontend_path, env )
+		lib.template.write_template( frontend_template_path, frontend_path, fabric.api.env )
 
 		print( message_prefix + fabric.colors.yellow("Inserting schema {0}".format(frontend_path)) )
 		fabric.operations.local("sudo ldapadd -Y EXTERNAL -H ldapi:/// -f {0}".format( frontend_path ) )
@@ -165,7 +182,7 @@ def backend_schema():
 		backend_path = os.path.join(fabric.api.env.TMP_WORKSPACE_ROOT, "schemas", "backend.ldif")
 
 		print( message_prefix + fabric.colors.yellow("Processing Schema {0}".format(backend_path)) )
-		write_template( backend_template_path, backend_path, env )
+		lib.template.write_template( backend_template_path, backend_path, fabric.api.env )
 
 		print( message_prefix + fabric.colors.yellow("Inserting schema {0}".format(backend_path)) )
 		fabric.operations.local("sudo ldapadd -Y EXTERNAL -H ldapi:/// -f {0}".format( backend_path ) )
@@ -234,7 +251,7 @@ def person(*args, **kwargs):
 	person_ldif_path = os.path.join(fabric.api.env.TMP_WORKSPACE_ROOT, "schemas", "users", "{0}.ldif".format( context["USERNAME"] ) )
 
 	print( message_prefix + yellow("Creating Temporary User LDIF") )
-	write_template( person_template_path, person_ldif_path, context )
+	lib.template.write_template( person_template_path, person_ldif_path, context )
 	fabric.operations.local("sudo ldapadd -Y EXTERNAL -H ldapi:/// -f {0}".format( person_ldif_path ) )
 
 def admin_user():
@@ -248,7 +265,7 @@ def admin_user():
 		"HOSTNAME" : fabric.api.env.HOSTNAME,
 		"DOMAIN" : fabric.api.env.DOMAIN
 	}
-	write_template( user_template_path, user_path, context )
+	lib.template.write_template( user_template_path, user_path, context )
 
 
 
