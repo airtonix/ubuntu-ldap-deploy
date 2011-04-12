@@ -1,0 +1,62 @@
+2011-04-13T08:09:58.252285 : New Deployment Session started.
+2011-04-13T08:09:58.252558 : HEREPATH = /media/STORAGE-2/Documents/Dev/ldap-deploy
+2011-04-13T08:09:58.252773 : TMP_WORKSPACE_ROOT = /tmp/tmpmOenET
+2011-04-13T08:10:13.752836 : ROOTPASSWD : Jo9TxMLNPETGZhrh
+2011-04-13T08:10:14.287826 : ADMINPASSWD : uf7IMkR78IKNCBSN
+2011-04-13T08:10:15.763325 : DOMAIN : home
+2011-04-13T08:10:15.763621 : DN : dc=edge,dc=home
+2011-04-13T08:13:54.279314 : Inserted default schema [/etc/ldap/schema/cosine.ldif]
+2011-04-13T08:13:54.316769 : Inserted default schema [/etc/ldap/schema/nis.ldif]
+2011-04-13T08:13:54.352095 : Inserted default schema [/etc/ldap/schema/inetorgperson.ldif]
+2011-04-13T08:19:29.982221 : New Deployment Session started.
+2011-04-13T08:19:29.982494 : HEREPATH = /media/STORAGE-2/Documents/Dev/ldap-deploy
+2011-04-13T08:19:29.982686 : TMP_WORKSPACE_ROOT = /tmp/tmpW2JltK
+2011-04-13T08:19:31.171362 : Purging slapd ldap-utils
+2011-04-13T08:20:26.306885 : New Deployment Session started.
+2011-04-13T08:20:26.307166 : HEREPATH = /media/STORAGE-2/Documents/Dev/ldap-deploy
+2011-04-13T08:20:26.307373 : TMP_WORKSPACE_ROOT = /tmp/tmpMKMROH
+2011-04-13T08:20:29.767328 : DOMAIN : home
+2011-04-13T08:20:29.767626 : DN : dc=edge,dc=home
+2011-04-13T08:20:33.332800 : Installing slapd ldap-utils
+2011-04-13T08:20:57.807687 : Inserted default schema [/etc/ldap/schema/cosine.ldif]
+2011-04-13T08:20:57.844689 : Inserted default schema [/etc/ldap/schema/nis.ldif]
+2011-04-13T08:20:57.880394 : Inserted default schema [/etc/ldap/schema/inetorgperson.ldif]
+2011-04-13T08:21:07.872736 : ROOTPASSWORD : to33PBWen5kzQSz1
+2011-04-13T08:23:27.240857 : New Deployment Session started.
+2011-04-13T08:23:27.248528 : HEREPATH = /media/STORAGE-2/Documents/Dev/ldap-deploy
+2011-04-13T08:23:27.248793 : TMP_WORKSPACE_ROOT = /tmp/tmpX7yzYR
+2011-04-13T08:23:28.152856 : Purging slapd ldap-utils
+2011-04-13T08:24:04.563271 : New Deployment Session started.
+2011-04-13T08:24:04.563543 : HEREPATH = /media/STORAGE-2/Documents/Dev/ldap-deploy
+2011-04-13T08:24:04.563759 : TMP_WORKSPACE_ROOT = /tmp/tmpy3s_nd
+2011-04-13T08:24:07.103480 : DOMAIN : home
+2011-04-13T08:24:07.103946 : DN : dc=edge,dc=home
+2011-04-13T08:24:12.667317 : Installing slapd ldap-utils
+2011-04-13T08:24:42.540700 : Inserted default schema [/etc/ldap/schema/cosine.ldif]
+2011-04-13T08:24:42.581960 : Inserted default schema [/etc/ldap/schema/nis.ldif]
+2011-04-13T08:24:42.618104 : Inserted default schema [/etc/ldap/schema/inetorgperson.ldif]
+2011-04-13T08:24:45.391938 : ROOTPASSWORD : G1rHQordtvqWyoDe
+2011-04-13T08:34:26.965698 : New Deployment Session started.
+2011-04-13T08:34:26.972777 : HEREPATH = /media/STORAGE-2/Documents/Dev/ldap-deploy
+2011-04-13T08:34:26.973002 : TMP_WORKSPACE_ROOT = /tmp/tmpvnRZLB
+2011-04-13T08:34:27.599309 : Purging slapd ldap-utils
+2011-04-13T08:40:08.478696 : ================================================================================
+New Deployment Session started.
+================================================================================
+2011-04-13T08:40:08.478964 : HEREPATH = /media/STORAGE-2/Documents/Dev/ldap-deploy
+2011-04-13T08:40:08.479150 : TMP_WORKSPACE_ROOT = /tmp/tmp4Wdcrt
+2011-04-13T08:40:10.251347 : DOMAIN : home
+2011-04-13T08:40:10.251636 : DN : dc=edge,dc=home
+2011-04-13T08:40:12.479801 : Installing slapd ldap-utils
+2011-04-13T08:40:41.403087 : Inserted default schema [/etc/ldap/schema/cosine.ldif]
+2011-04-13T08:40:41.440828 : Inserted default schema [/etc/ldap/schema/nis.ldif]
+2011-04-13T08:40:41.476065 : Inserted default schema [/etc/ldap/schema/inetorgperson.ldif]
+2011-04-13T08:40:45.323894 : ROOTPASSWORD : wVM6EbaR2p4bJ18e
+2011-04-13T08:40:56.679354 : Inserting Admin User: cn=admin,dc=edge,dc=home
+2011-04-13T08:40:58.951338 : ADMINPASSWORD : ebAssNiOwQ8GMJMz
+2011-04-13T08:44:28.015825 : ==================================================
+                              New Deployment Session started.
+                              ==================================================
+2011-04-13T08:44:28.016092 : HEREPATH = /media/STORAGE-2/Documents/Dev/ldap-deploy
+2011-04-13T08:44:28.016305 : TMP_WORKSPACE_ROOT = /tmp/tmpFlVQN1
+2011-04-13T08:44:28.868816 : Purging slapd ldap-utils

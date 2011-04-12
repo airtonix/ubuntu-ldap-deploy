@@ -1,4 +1,4 @@
-dn: dc=${HOSTNAME},dc=${DOMAIN}
+dn: ${DN}
 objectClass: top
 objectClass: dcObject
 objectclass: organization
@@ -6,11 +6,18 @@ o: ${ORGANISATIONNAME}
 dc: ${HOSTNAME}
 description: ${DESCRIPTION}
 
-dn: ou=people,dc=${HOSTNAME},dc=${DOMAIN}
+dn: cn=admin,${DN}
+objectClass: simpleSecurityObject
+objectClass: organizationalRole
+cn: admin
+description: LDAP administrator
+userPassword: ${ADMINPASSWORD}
+
+dn: ou=people,${DN}
 objectClass: organizationalUnit
 ou: people
 
-dn: ou=groups,dc=${HOSTNAME},dc=${DOMAIN}
+dn: ou=groups,${DN}
 objectClass: organizationalUnit
 ou: groups
 

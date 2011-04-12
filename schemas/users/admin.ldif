@@ -1,7 +1,0 @@
-dn: cn=admin,dc=${HOSTNAME},dc=${DOMAIN}
-objectClass: simpleSecurityObject
-objectClass: organizationalRole
-cn: admin
-description: LDAP administrator
-userPassword: ${ADMINPASSWORD}
-

@@ -13,7 +13,7 @@ olcDatabase: {1}hdb
 olcSuffix: ${DN}
 olcDbDirectory: /var/lib/ldap
 olcRootDN: cn=admin,${DN}
-olcRootPW: ${ROOTPASSWD}
+olcRootPW: ${ROOTPASSWORD}
 olcDbConfig: set_cachesize 0 2097152 0
 olcDbConfig: set_lk_max_objects 1500
 olcDbConfig: set_lk_max_locks 1500
