@@ -1,0 +1,16 @@
+dn: dc=${HOSTNAME},dc=${DOMAIN}
+objectClass: top
+objectClass: dcObject
+objectclass: organization
+o: ${ORGANISATIONNAME}
+dc: ${HOSTNAME}
+description: ${DESCRIPTION}
+
+dn: ou=people,dc=${HOSTNAME},dc=${DOMAIN}
+objectClass: organizationalUnit
+ou: people
+
+dn: ou=groups,dc=${HOSTNAME},dc=${DOMAIN}
+objectClass: organizationalUnit
+ou: groups
+

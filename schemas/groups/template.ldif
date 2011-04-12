@@ -1,0 +1,5 @@
+dn: cn=${GROUPNAME},ou=groups,${DN}
+objectClass: posixGroup
+cn: ${GROUPNAME}
+gidNumber: ${GROUPID}
+

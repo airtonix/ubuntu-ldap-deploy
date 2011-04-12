@@ -1,0 +1,31 @@
+dn: uid=${USERNAME},ou=people,${DN}
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: ${USERNAME}
+sn: ${LASTNAME}
+givenName: ${FIRSTNAME}
+cn: ${FIRSTNAME} ${LASTNAME}
+displayName: ${FIRSTNAME} ${LASTNAME}
+uidNumber: ${USERID}
+gidNumber: ${GROUPID}
+userPassword: ${USERPASSWORD}
+gecos: ${FIRSTNAME} ${LASTNAME}
+loginShell: /bin/bash
+homeDirectory: /home/${USERNAME}
+shadowExpire: -1
+shadowFlag: 0
+shadowWarning: 7
+shadowMin: 8
+shadowMax: 999999
+shadowLastChange: 10877
+mail: ${USERNAME}@${HOSTNAME}.${DOMAIN}
+postalCode: ${POSTCODE}
+l: ${SUBURB}
+o: ${ORGANISATION}
+mobile: ${PHONEMOBILE}
+homePhone: ${PHONEHOME}
+title: ${TITLE}
+postalAddress: ${POSTALADDRESS}
+initials: ${INITIALS}
+
