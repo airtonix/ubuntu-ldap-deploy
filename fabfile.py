@@ -136,6 +136,19 @@ def frontend_schema():
 			default = password(16, console=True)
 		)
 
+		fabric.contrib.console.prompt(
+			fabric.colors.yellow("Organisation Name"),
+			key = "ORGANISATIONNAME",
+			default = "Example"
+		)
+
+		fabric.contrib.console.prompt(
+			fabric.colors.yellow("LDAP Domain Description"),
+			key = "DESCRIPTION",
+			default = "Awesome Organisation description goes here"
+		)
+
+
 		print( message_prefix + fabric.colors.yellow("Processing Schema {0}".format(frontend_path)) )
 		write_template( frontend_template_path, frontend_path, env )
 
