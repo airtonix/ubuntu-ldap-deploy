@@ -42,8 +42,6 @@ def log(msg):
 	))
 	logfile.close()
 
-
-
 fabric.api.env.HEREPATH = os.path.abspath( os.path.dirname(__file__) )
 fabric.api.env.HOSTNAME = fabric.operations.local("hostname", capture=True )
 fabric.api.env.DOMAIN = None
@@ -52,7 +50,12 @@ fabric.api.env.ADMINPASSWORD = None
 fabric.api.env.TMP_WORKSPACE_ROOT = tempfile.mkdtemp()
 fabric.api.env.DN = None
 
-log("="*50 + "\n" + " "*30 +"New Deployment Session started." + "\n" + " "*30 + "="*50)
+log(" {hr}\n{space} {label}\n{space}{hr}".format(
+	hr="="*50,
+	space = " "*30,
+	label = "New Deployment Session started."
+))
+
 log("HEREPATH = {0}".format(fabric.api.env.HEREPATH) )
 log("TMP_WORKSPACE_ROOT = {0}".format(fabric.api.env.TMP_WORKSPACE_ROOT) )
 ## Create Temporary Build Directory
@@ -161,47 +164,17 @@ def default_schema():
 		"inetorgperson",
 	)
 	if fabric.contrib.console.confirm( "\t" + fabric.colors.yellow("Insert Default LDIF Schemas") ) :
+		log("Inserting Default Schema [{0}]".format(",".join(default_schema)) )
 		for schema in default_schemas:
 			schema_file = "/etc/ldap/schema/{0}.ldif".format(schema)
 			fabric.operations.local("sudo ldapadd -Y EXTERNAL -H ldapi:/// -f {0}".format(schema_file) )
 			log("Inserted default schema [{0}]".format(schema_file) )
 
-def frontend_schema():
-	message_prefix = fabric.colors.cyan("Frontend Schema") +" : "
-
-	if fabric.contrib.console.confirm( "\t" + fabric.colors.yellow("Insert Default Frontend LDIF Schemas") ) :
-
-		lib.files.makedir( os.path.join(fabric.api.env.TMP_WORKSPACE_ROOT, "schemas") )
-		frontend_template_path = os.path.join(fabric.api.env.HEREPATH, "schemas", "frontend.ldif")
-		frontend_path = os.path.join(fabric.api.env.TMP_WORKSPACE_ROOT, "schemas", "frontend.ldif")
-
-		fabric.contrib.console.prompt(
-			fabric.colors.yellow("Organisation Name"),
-			key = "ORGANISATIONNAME",
-			default = "Example"
-		)
-
-		fabric.contrib.console.prompt(
-			fabric.colors.yellow("LDAP Domain Description"),
-			key = "DESCRIPTION",
-			default = "Awesome Organisation description goes here"
-		)
-
-		log("Inserting Admin User: cn=admin,{0}".format(fabric.api.env.DN) )
-		fabric.contrib.console.prompt( text=fabric.colors.yellow("LDAP Admin Password : "), key="ADMINPASSWORD", default=password( 16, console=False ) )
-		log("ADMINPASSWORD : {0}".format(fabric.api.env.ADMINPASSWORD) )
-
-		print( message_prefix + fabric.colors.yellow("Processing Schema {0}".format(frontend_path)) )
-		lib.template.write_template( frontend_template_path, frontend_path, fabric.api.env )
-
-		print( message_prefix + fabric.colors.yellow("Inserting schema {0}".format(frontend_path)) )
-		fabric.operations.local("sudo ldapadd -x -D cn=admin,{0} -W -f {1}".format( fabric.api.env.DN, frontend_path ) )
-
 def backend_schema():
 	message_prefix = fabric.colors.cyan("Backend Schema") +" : "
 
 	if fabric.contrib.console.confirm( "\t" + fabric.colors.yellow("Insert Default Backend LDIF Schemas") ) :
-
+		log("Inserting Backend Schema")
 		fabric.contrib.console.prompt(
 			fabric.colors.yellow("LDAP Root Password"),
 			key = "ROOTPASSWORD",
@@ -218,6 +191,42 @@ def backend_schema():
 
 		print( message_prefix + fabric.colors.yellow("Inserting schema {0}".format(backend_path)) )
 		fabric.operations.local("sudo ldapadd -Y EXTERNAL -H ldapi:/// -f {0}".format( backend_path ) )
+
+def frontend_schema():
+	message_prefix = fabric.colors.cyan("Frontend Schema") +" : "
+
+	if fabric.contrib.console.confirm( "\t" + fabric.colors.yellow("Insert Default Frontend LDIF Schemas") ) :
+		log("Inserting Frontend Schema")
+
+		lib.files.makedir( os.path.join(fabric.api.env.TMP_WORKSPACE_ROOT, "schemas") )
+		frontend_template_path = os.path.join(fabric.api.env.HEREPATH, "schemas", "frontend.ldif")
+		frontend_path = os.path.join(fabric.api.env.TMP_WORKSPACE_ROOT, "schemas", "frontend.ldif")
+
+		fabric.contrib.console.prompt(
+			fabric.colors.yellow("Organisation Name"),
+			key = "ORGANISATIONNAME",
+			default = "Example"
+		)
+		log("ORGANISATIONNAME : {0}".format(fabric.api.env.ORGANISATIONNAME) )
+
+		fabric.contrib.console.prompt(
+			fabric.colors.yellow("LDAP Domain Description"),
+			key = "DESCRIPTION",
+			default = "Awesome Organisation description goes here"
+		)
+		log("DESCRIPTION : {0}".format(fabric.api.env.DESCRIPTION) )
+
+		log("Inserting Admin User: cn=admin,{0}".format(fabric.api.env.DN) )
+		fabric.contrib.console.prompt( text=fabric.colors.yellow("LDAP Admin Password : "), key="ADMINPASSWORD", default=password( 16, console=False ) )
+		log("ADMINPASSWORD : {0}".format(fabric.api.env.ADMINPASSWORD) )
+
+		print( message_prefix + fabric.colors.yellow("Processing Schema {0}".format(frontend_path)) )
+		log("Processing Schema {0}".format(frontend_path))
+		lib.template.write_template( frontend_template_path, frontend_path, fabric.api.env )
+
+		print( message_prefix + fabric.colors.yellow("Inserting Schema {0}".format(frontend_path)) )
+		log("Inserting Schema {0}".format(frontend_path))
+		fabric.operations.local("sudo ldapadd -x -D cn=admin,{0} -W -f {1}".format( fabric.api.env.DN, frontend_path ) )
 
 
 #=================
@@ -261,7 +270,7 @@ def person(*args, **kwargs):
 	context = kwargs
 
 	if not fabric.api.env.DN :
-		setup()
+		_variables()
 
 	if "password" in kwargs.keys():
 		pword = kwarg(context, 'password')
@@ -276,10 +285,11 @@ def person(*args, **kwargs):
 		"TITLE" : fabric.contrib.console.prompt( message_prefix + fabric.colors.yellow("Title : "), default=_kwarg(context, 'title') ),
 		"USERID" : fabric.contrib.console.prompt( message_prefix + fabric.colors.yellow("unix User ID : "), default=_kwarg(context, 'uid') ),
 		"GROUPID" : fabric.contrib.console.prompt( message_prefix + fabric.colors.yellow("unix Group ID : "), default=_kwarg(context, 'gid') ),
+		#TODO : Change this to SHHASUM Encoding
 		"USERPASSWORD" : fabric.contrib.console.prompt( message_prefix + fabric.colors.yellow("User Password : "), default=pword ),
 		"PHONEMOBILE" : fabric.contrib.console.prompt( message_prefix + fabric.colors.yellow("Mobile Phone : "), default=_kwarg(context, 'mobile') ),
 		"PHONEHOME" : fabric.contrib.console.prompt( message_prefix + fabric.colors.yellow("Home Phone : "), default=_kwarg(context, 'phone') ),
-		"ORGANISATION" : fabric.contrib.console.prompt( message_prefix + fabric.colors.yellow("Organisation : "), default=_kwarg(context, 'organisation') ),
+		"ORGANISATION" : fabric.contrib.console.prompt( message_prefix + fabric.colors.yellow("Organisation : "), default=_kwarg(context, 'org') ),
 		"POSTALADDRESS" : fabric.contrib.console.prompt( message_prefix + fabric.colors.yellow("Address : "), default=_kwarg(context, 'address') ),
 		"POSTCODE" : fabric.contrib.console.prompt( message_prefix + fabric.colors.yellow("Postcode : "), default=_kwarg(context, 'postcode') ),
 		"SUBURB" : fabric.contrib.console.prompt( message_prefix + fabric.colors.yellow("Suburb : "), default=_kwarg(context, 'suburb') ),
@@ -287,13 +297,13 @@ def person(*args, **kwargs):
 		"DOMAIN" : fabric.contrib.console.prompt( message_prefix + fabric.colors.yellow("DOMAIN : "), default=fabric.api.env.DOMAIN ),
 		"HOSTNAME" : fabric.contrib.console.prompt( message_prefix + fabric.colors.yellow("HOSTNAME : "), default=fabric.api.env.HOSTNAME ),
 	}
+	log("Inserting person LDIF : \n {ldif}".format(ldif=context))
+	person_template_path = os.path.join(fabric.api.env.HEREPATH, "schemas", "user.ldif")
+	ldif_path = os.path.join(fabric.api.env.TMP_WORKSPACE_ROOT, "schemas", "users", "{0}.ldif".format( context["USERNAME"] ) )
 
-	person_template_path = os.path.join(fabric.api.env.HEREPATH, "schemas", "users", "person.ldif")
-	person_ldif_path = os.path.join(fabric.api.env.TMP_WORKSPACE_ROOT, "schemas", "users", "{0}.ldif".format( context["USERNAME"] ) )
-
-	print( message_prefix + yellow("Creating Temporary User LDIF") )
-	lib.template.write_template( person_template_path, person_ldif_path, context )
-	fabric.operations.local("sudo ldapadd -Y EXTERNAL -H ldapi:/// -f {0}".format( person_ldif_path ) )
+	print( message_prefix + fabric.colors.yellow("Creating Temporary User LDIF") )
+	lib.template.write_template( person_template_path, ldif_path, context )
+	fabric.operations.local("sudo ldapadd -x -D cn=admin,{0} -W -f {1}".format( fabric.api.env.DN, ldif_path ) )
 
 
 def _inputseed( name = None ):
@@ -358,9 +368,8 @@ def start():
 	# frontend schema
 	frontend_schema()
 	#
-	preseed(name="groups")
-#	inputseed(name = "groups")
-#	#
-	preseed(name="users")
-#	inputseed(name = "users")
+	preseed(name = "groups")
+	inputseed(name = "groups")
+	preseed(name = "users")
+	inputseed(name = "users")
 
